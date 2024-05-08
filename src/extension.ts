@@ -26,26 +26,31 @@ export async function activate({ subscriptions }: vscode.ExtensionContext) {
 function runExtension(subscriptions: any){
 	const myCommandId = 'mdhamel.startReactServer';
 	const npmCommand = 'npm run start';
+
 	let isRunning:boolean = false;
+
+	const startText = `$(vm)\xa0\xa0Start React App`;
+	const runningText = `$(vm-running)\xa0\xa0React App Running`;
+
 
 	myStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 7);
 		myStatusBarItem.command = myCommandId;
 		subscriptions.push(myStatusBarItem);
 
-		myStatusBarItem.text = `$(broadcast) Start React App`;
+		myStatusBarItem.text = startText;
 		myStatusBarItem.show();
 
 
 	subscriptions.push(vscode.commands.registerCommand(myCommandId, () => {
 		if(isRunning){
 			terminal.sendText('\x03 \n');
-			myStatusBarItem.text = `$(broadcast) Start React App`;
+			myStatusBarItem.text = startText;
 			myStatusBarItem.show();
 			isRunning = false;
 		}
 		else{
 			terminal.sendText(npmCommand + "\n");
-			myStatusBarItem.text = `$(radio-tower) React App Running`;
+			myStatusBarItem.text = runningText;
 			myStatusBarItem.show();
 			isRunning = true;
 		}
