@@ -3,15 +3,39 @@ import * as vscode from 'vscode';
 let myStatusBarItem: vscode.StatusBarItem;
 const terminal:vscode.Terminal = vscode.window.createTerminal({ name: 'npm' });
 
-export function activate({ subscriptions }: vscode.ExtensionContext) {
+export async function activate({ subscriptions }: vscode.ExtensionContext) {
+	const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+	if (!workspaceFolder) return false;
 
+	// Use vscode.workspace.fs to read the package.json file
+	try{
+		const packageJsonPath = workspaceFolder.uri.fsPath + '/package.json';
+		const packageJson = (await vscode.workspace.fs.readFile(vscode.Uri.file(packageJsonPath)));
+		const packageJsonContent = JSON.parse(packageJson.toString());
+	
+		if (packageJsonContent.dependencies.react){
+			runExtension(subscriptions);
+		}
+	}
+	catch(error:any){
+		return false;
+	}
+	
+}
+
+function runExtension(subscriptions: any){
+	const myCommandId = 'mdhamel.startReactServer';
 	const npmCommand = 'npm run start';
-	const imagePath = vscode.Uri.file('/media/icon.png');
 	let isRunning:boolean = false;
 
+	myStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 7);
+		myStatusBarItem.command = myCommandId;
+		subscriptions.push(myStatusBarItem);
 
-	const myCommandId = 'mdhamel.startReactApp';
-	
+		myStatusBarItem.text = `$(broadcast) Start React App`;
+		myStatusBarItem.show();
+
+
 	subscriptions.push(vscode.commands.registerCommand(myCommandId, () => {
 		if(isRunning){
 			terminal.sendText('\x03 \n');
@@ -26,12 +50,4 @@ export function activate({ subscriptions }: vscode.ExtensionContext) {
 			isRunning = true;
 		}
 	}));
-
-	// create a new status bar item that we can now manage
-	myStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 7);
-	myStatusBarItem.command = myCommandId;
-	subscriptions.push(myStatusBarItem);
-
-	myStatusBarItem.text = `$(broadcast) Start React App`;
-	myStatusBarItem.show();
 }

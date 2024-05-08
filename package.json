@@ -1,8 +1,8 @@
 {
 	"name": "start-react-server",
-	"displayName": "React Server App",
-	"description": "Easily start your  React app in Visual Studio",
-	"version": "0.0.1",
+	"displayName": "Start React Server",
+	"description": "Easily start your React.js app inside Visual Studio Code",
+	"version": "0.0.2",
 	"publisher": "MDHamel",
 	"private": true,
 	"engines": {
@@ -13,11 +13,12 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": ""
+		"url": "https://github.com/MDHamel/Start-React-App-VS-Code-Extension"
 	},
 	"activationEvents": [
 		"*"
 	],
+	"license": "MIT",
 	"main": "./out/extension.js",
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
@@ -31,5 +32,9 @@
 		"@typescript-eslint/parser": "^6.7.0",
 		"eslint": "^8.26.0",
 		"typescript": "^5.4.2"
+	},
+	"dependencies": {
+		"path": "^0.12.7",
+		"util": "^0.12.5"
 	}
 }
